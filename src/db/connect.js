@@ -8,5 +8,5 @@ mongoose.connect('mongodb+srv://Prabhash:Prabhash@cluster0.dwtij59.mongodb.net/F
     console.log("connection is successful");
   })
   .catch((e) => {
-    console.log("No connection");
+    console.log("No connection",e);
   });
