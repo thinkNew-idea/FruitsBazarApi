@@ -1,5 +1,4 @@
 const express = require("express");
-const User = require("./src/models/User");
 const app = express();
 const apis = require("./src/routes/apis");
 require("./src/db/connect");
