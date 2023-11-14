@@ -11,13 +11,13 @@ const UploadController = require("../controller/Upload");
 const Product = require("../controller/product");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // cb(null, path.join(__dirname, "../public/storage"));
-    cb(
-      null,
-      path.join(
-        "/Users/prabhashvishwakarma/Desktop/SampleProjects/FruitsBazarApis/public/storage"
-      )
-    );
+    cb(null, path.join(__dirname, "../public/storage"));
+    // cb(
+    //   null,
+    //   path.join(
+    //     "/Users/prabhashvishwakarma/Desktop/SampleProjects/FruitsBazarApis/public/storage"
+    //   )
+    // );
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
