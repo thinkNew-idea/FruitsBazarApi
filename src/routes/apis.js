@@ -34,11 +34,16 @@ router.post("/login", LoginRequest(), Auth.loginUser);
 router.post("/sendOtp", SendOTPRequest(), Auth.sendOtp);
 
 // products apis
-router.post("/CreateProduct", Product.CreateProduct);
-router.get("/GetProducts",Product.GetProducst);
+router.post("/createProduct", Product.CreateProduct);
+router.get("/getProducts",Product.GetProducst);
+router.get("/getProducts/:id",Product.GetProducstById);
+router.get("/getProducts=:search",Product.GetProducstSearch);
 
 //Cart
 router.post("/addCart",verifyToken,Cart.AddCart);
+router.get("/getCart",verifyToken,Cart.GetCart);
+router.post("/removeCart",verifyToken,Cart.RemoveCart);
+
 
 //upload files
 router.post("/upload", upload.single("file"), UploadController.storeFile);

@@ -3,12 +3,11 @@ const jwt = require("jsonwebtoken");
 module.exports = (req, res, next) => {
    const authHeader = req?.headers['authorization']?.replace('Bearer ', '');
    if (authHeader==undefined ||authHeader==null) {
-      const error = res.json(
+      const error = res.status(500).send(
          {
             error: "authentication Error!",
             message: "Not authenticated!",
-         },
-         500
+         }
       );
       throw error;
    }

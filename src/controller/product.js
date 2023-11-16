@@ -14,7 +14,7 @@ const CreateProduct = async (req, res) => {
     description: req.body.description,
     photos: req.body.photos,
     productCount: req.body.productCount,
-    price: req.body.price
+    price: req.body.price,
   };
 
   await Product.create(val)
@@ -34,7 +34,6 @@ const CreateProduct = async (req, res) => {
     });
 };
 
-
 const GetProducst = async (req, res) => {
   await Product.find()
     .then(async (response) => {
@@ -53,7 +52,47 @@ const GetProducst = async (req, res) => {
     });
 };
 
+const GetProducstById = async (req, res) => {
+  await Product.findById(req?.params?.id)
+    .then(async (response) => {
+      return res.status(200).send({
+        data: response,
+        ok: true,
+        message: "Product given sucessfully !",
+      });
+    })
+    .catch((e) => {
+      return res.status(500).send({
+        error: e,
+        message: e.message,
+        ok: false,
+      });
+    });
+};
+
+const GetProducstSearch = async (req, res) => {
+  if (req?.params?.search?.length > 3) {
+    var searchString = new RegExp(req?.params?.search, "i");
+    Product.find({ title: { $regex: searchString } })
+      .then(async (response) => {
+        return res.status(200).send({
+          data: response,
+          ok: true,
+          message: "Product given sucessfully !",
+        });
+      })
+      .catch((e) => {
+        return res.status(500).send({
+          error: e,
+          message: e.message,
+          ok: false,
+        });
+      });
+  }
+};
 module.exports = {
   CreateProduct,
-  GetProducst
+  GetProducst,
+  GetProducstById,
+  GetProducstSearch,
 };
