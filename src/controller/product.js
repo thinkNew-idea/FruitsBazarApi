@@ -14,6 +14,7 @@ const CreateProduct = async (req, res) => {
     description: req.body.description,
     photos: req.body.description,
     productCount: req.body.productCount,
+    price: req.body.price
   };
 
   await Product.create(val)
