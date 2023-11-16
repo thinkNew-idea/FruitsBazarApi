@@ -78,7 +78,7 @@ const GetProducstSearch = async (req, res) => {
         return res.status(200).send({
           data: response,
           ok: true,
-          message: "Product given sucessfully !",
+          message: "Product search given sucessfully !",
         });
       })
       .catch((e) => {
@@ -88,6 +88,11 @@ const GetProducstSearch = async (req, res) => {
           ok: false,
         });
       });
+  }else{
+    return res.status(200).send({
+      ok: false,
+      message: "Character length must be greater than 3!",
+    });
   }
 };
 module.exports = {

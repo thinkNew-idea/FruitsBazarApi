@@ -53,7 +53,7 @@ const cartAddFuntion = async (req, res, item) => {
 const cartRemoveFuntion = async (req, res, item) => {
   let val;
   let single = item[0];
-  if (single.product_count == 1) {
+  if (single?.product_count == 1) {
     await Cart.findByIdAndDelete(single?._id?.toString())
       .then(async () => {
         return res.status(200).send({
@@ -72,7 +72,7 @@ const cartRemoveFuntion = async (req, res, item) => {
     val = {
       user_id: req.body.user_id,
       product_id: req.body.product_id,
-      product_count: single.product_count - 1,
+      product_count: single?.product_count - 1,
     };
 
     await Cart.findByIdAndUpdate(single?._id?.toString(), val, { new: true })
@@ -120,11 +120,15 @@ const GetCart = async (req, res) => {
       });
     });
   }
-  return res.status(200).send({
-    data: cartList,
-    ok: true,
-    message: "Cart given sucessfully !",
-  });
+  console.log(cartList)
+  if(cartList){
+    return res.status(200).send({
+      data: cartList,
+      ok: true,
+      message: "Cart given sucessfully !",
+    });
+  }
+
 };
 const RemoveCart = async (req, res) => {
   const errors = validationResult(req);
