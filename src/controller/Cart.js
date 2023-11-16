@@ -2,7 +2,7 @@ const { validationResult } = require("express-validator");
 const Cart = require("../models/Cart");
 const Product = require("../models/ProductList");
 
-const cartAddFuntion = async (req, res, item) => {
+const cartAddFuntion = async (req, res, item,ProductDetails) => {
   let val;
   if (item.length == 0) {
     val = {
@@ -27,27 +27,34 @@ const cartAddFuntion = async (req, res, item) => {
       });
   } else {
     let single = item[0];
-    val = {
-      user_id: req.body.user_id,
-      product_id: req.body.product_id,
-      product_count: single.product_count + 1,
-    };
-
-    await Cart.findByIdAndUpdate(single?._id?.toString(), val, { new: true })
-      .then(async (response) => {
-        return res.status(200).send({
-          data: response,
-          ok: true,
-          message: "Add to cart sucessfully !",
+    let bookedVal=single.product_count + 1;
+    if(ProductDetails.productCount>=bookedVal){
+      val = {
+        user_id: req.body.user_id,
+        product_id: req.body.product_id,
+        product_count:bookedVal,
+      };
+      await Cart.findByIdAndUpdate(single?._id?.toString(), val, { new: true })
+        .then(async (response) => {
+          return res.status(200).send({
+            data: response,
+            ok: true,
+            message: "Add to cart sucessfully !",
+          });
+        })
+        .catch((e) => {
+          return res.status(500).send({
+            error: e,
+            message: e.message,
+            ok: false,
+          });
         });
-      })
-      .catch((e) => {
-        return res.status(500).send({
-          error: e,
-          message: e.message,
-          ok: false,
-        });
+    }else{
+      return res.status(200).send({
+        ok: false,
+        message: "Max "+ProductDetails.productCount+" product allowed !",
       });
+    }
   }
 };
 const cartRemoveFuntion = async (req, res, item) => {
@@ -100,12 +107,15 @@ const AddCart = async (req, res) => {
       ok: false,
     });
   }
+  const product_id=req?.body?.product_id;
+  const user_id=req?.body?.user_id;
   let val = {
-    user_id: req.body.user_id,
-    product_id: req.body.product_id,
+    user_id:user_id,
+    product_id:product_id,
   };
   const findProduct = await Cart.find(val);
-  cartAddFuntion(req, res, findProduct);
+  const ProductDetails= await Product.findById(product_id);
+  cartAddFuntion(req, res, findProduct,ProductDetails);
 };
 const GetCart = async (req, res) => {
   const CartData = await Cart.find({ user_id: req?.body?.user_id });

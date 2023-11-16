@@ -28,6 +28,11 @@ router.get("/getProducts",Product.GetProducst);
 router.get("/getProducts/:id",Product.GetProducstById);
 router.get("/getProducts=:search",Product.GetProducstSearch);
 
+
+//Order
+router.post("/buyProduct", Product.BuyProduct);
+router.get("/getOrders",verifyToken,Product.GetOderList);
+
 //Cart
 router.post("/addCart",verifyToken,Cart.AddCart);
 router.get("/getCart",verifyToken,Cart.GetCart);
