@@ -14,7 +14,7 @@ const sendRegisterOTP = async (to) => {
     cache.set(`register_otp_${to}`, otp, otpExpirationTime)
     let subject = 'OTP for registration at FruitsBazar'
     let body = `Dear ${to}, your otp is ${otp}`
-    console.debug(cache.get(`register_otp_${to}`));
+   //  console.debug(cache.get(`register_otp_${to}`));
     return sendMail(to, subject, body)
  }
 module.exports = {
