@@ -11,22 +11,11 @@ const UploadController = require("../controller/Upload");
 const Product = require("../controller/product");
 const Cart = require("../controller/Cart");
 const verifyToken = require("../middleware/verifyToken");
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/storage"));
-    // cb(
-    //   null,
-    //   path.join(
-    //     "/Users/prabhashvishwakarma/Desktop/SampleProjects/FruitsBazarApis/public/storage"
-    //   )
-    // );
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + file.originalname);
-  },
+const upload = multer({
+  storage: multer.diskStorage({}),
+  limits: { fileSize: 500000 }
 });
-var upload = multer({ storage });
+// var upload = storage
 
 //User login and register apis
 router.post("/register", RegisterRequest(), Auth.registerUser);
