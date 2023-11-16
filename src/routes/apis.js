@@ -9,6 +9,8 @@ const SendOTPRequest = require("../requestValidation/SendOTPRequest");
 const LoginRequest = require("../requestValidation/LoginRequest");
 const UploadController = require("../controller/Upload");
 const Product = require("../controller/product");
+const Cart = require("../controller/Cart");
+const verifyToken = require("../middleware/verifyToken");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, "../public/storage"));
@@ -35,6 +37,8 @@ router.post("/sendOtp", SendOTPRequest(), Auth.sendOtp);
 router.post("/CreateProduct", Product.CreateProduct);
 router.get("/GetProducts",Product.GetProducst);
 
+//Cart
+router.post("/addCart",verifyToken,Cart.AddCart);
 
 //upload files
 router.post("/upload", upload.single("file"), UploadController.storeFile);

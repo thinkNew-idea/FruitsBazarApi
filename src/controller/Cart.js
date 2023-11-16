@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
-const Product = require("../models/ProductList");
+const Cart = require("../models/Cart");
 
-const CreateProduct = async (req, res) => {
+const AddCart = async (req, res,next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).send({
@@ -9,15 +9,13 @@ const CreateProduct = async (req, res) => {
       ok: false,
     });
   }
+
   let val = {
-    title: req.body.title,
-    description: req.body.description,
-    photos: req.body.photos,
-    productCount: req.body.productCount,
-    price: req.body.price
+    user_id: req.body.user_id,
+    product_id: req.body.product_id
   };
 
-  await Product.create(val)
+  await Cart.create(val)
     .then(async (response) => {
       return res.status(200).send({
         data: response,
@@ -54,6 +52,6 @@ const GetProducst = async (req, res) => {
 };
 
 module.exports = {
-  CreateProduct,
+  AddCart,
   GetProducst
 };

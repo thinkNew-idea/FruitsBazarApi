@@ -10,7 +10,7 @@ const generateTokenForUser = (user) => {
   const tokenExpiresIn = "168h";
   const token = jwt.sign(
     { user_id: user._id, username: user.username },
-    `${process.env.JWT_SECRET_KEY}`,
+    'secret',
     {
       expiresIn: tokenExpiresIn,
     }
