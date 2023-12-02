@@ -3,6 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const { sendRegisterOTP } = require("../Email/sendOtp");
+const OtpModel = require("../models/otpModel");
 function verifyPassword(plaintextPassword, encryptedPassword) {
   return bcrypt.compareSync(plaintextPassword, encryptedPassword);
 }
@@ -44,6 +45,36 @@ const sendOtp = async (req, res, next) => {
     });
   }
 };
+
+const OtpVerify = async(req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).send({
+      ...JSON.parse(JSON.stringify(errors)),
+      message: "Please fill valid inputs",
+      ok: false,
+    });
+  }
+  const email = req.body.email;
+  const otp = req.body.otp;
+
+    await OtpModel.findOne({email:email}).then((response)=>{
+      console.warn({response})
+      if(otp==response?.otp){
+        return res.send({
+          ok: true,
+          response: response,
+          message: "OTP verification done successfuly",
+        });
+      }else{
+        return res.send({
+          ok: false,
+          message: "Invalid OTP !",
+        });
+      }
+  });
+}
+
 const registerUser = async (req, res) => {
    const errors = validationResult(req);
    if (!errors.isEmpty()) {
@@ -121,4 +152,5 @@ module.exports = {
   registerUser,
   sendOtp,
   loginUser,
+  OtpVerify
 };

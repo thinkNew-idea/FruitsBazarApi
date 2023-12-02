@@ -11,6 +11,7 @@ const UploadController = require("../controller/Upload");
 const Product = require("../controller/product");
 const Cart = require("../controller/Cart");
 const verifyToken = require("../middleware/verifyToken");
+const VerifyOTPRequest = require("../requestValidation/VerifyOTPRequest");
 const upload = multer({
   storage: multer.diskStorage({}),
   limits: { fileSize: 500000 }
@@ -21,9 +22,11 @@ const upload = multer({
 router.post("/register", RegisterRequest(), Auth.registerUser);
 router.post("/login", LoginRequest(), Auth.loginUser);
 router.post("/sendOtp", SendOTPRequest(), Auth.sendOtp);
+router.post("/OtpVerify",VerifyOTPRequest(), Auth.OtpVerify);
 
 // products apis
 router.post("/createProduct", Product.CreateProduct);
+router.post("/deleteProduct/:id", Product.DeleteProduct);
 router.get("/getProducts",Product.GetProducst);
 router.get("/getProducts/:id",Product.GetProducstById);
 router.get("/getProducts=:search",Product.GetProducstSearch);

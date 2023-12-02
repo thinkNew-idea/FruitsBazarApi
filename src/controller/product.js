@@ -173,11 +173,28 @@ const GetOderList = async (req, res) => {
 
 };
 
+const DeleteProduct = async (req, res) => {
+  await Product.findByIdAndDelete(req?.params?.id) .then(async (response) => {
+    return res.status(200).send({
+      ok: true,
+      message: "Product deleted sucessfully !",
+    });
+  })
+  .catch((e) => {
+    return res.status(500).send({
+      error: e,
+      message: e.message,
+      ok: false,
+    });
+  });
+};
+
 module.exports = {
   BuyProduct,
   CreateProduct,
   GetProducst,
   GetProducstById,
   GetProducstSearch,
-  GetOderList
+  GetOderList,
+  DeleteProduct
 };
