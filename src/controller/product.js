@@ -72,16 +72,26 @@ const BuyProduct = async (req, res) => {
   const productId= req.body.productId;
   const productCount= req.body.productCount;
   const productDetails = await Product.findById(productId);
+  console.log({productDetails})
   if(productDetails?.productCount>=productCount){
     let remainProducts=productDetails?.productCount-productCount;
     await Product.findByIdAndUpdate(productId,{productCount:remainProducts,inStock:remainProducts>0?true:false },{new:true}).then((response)=>{
       OrderProduct(req, res,response,productId,productCount,user_id)
     })
   }else{
-    return res.status(200).send({
-      ok: false,
-      message: "Max "+productDetails.productCount+" product allowed !",
-    });
+    if(productDetails!=null){
+      return res.status(200).send({
+        ok: false,
+        maxcount:productDetails.productCount,
+        message:productDetails.productCount<=0?"product is out of stock":"Max "+productDetails.productCount+" product allowed !"
+      });
+    }else{
+      return res.status(200).send({
+        ok: false,
+        message: "product doesn,t exits !",
+      });
+    }
+   
   }
 
  
