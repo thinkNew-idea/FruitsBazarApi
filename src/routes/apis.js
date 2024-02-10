@@ -19,10 +19,11 @@ const upload = multer({
 // var upload = storage
 
 //User login and register apis
-router.post("/register", RegisterRequest(), Auth.registerUser);
+// router.post("/register", RegisterRequest(), Auth.registerUser);
 router.post("/login", LoginRequest(), Auth.loginUser);
 router.post("/sendOtp", SendOTPRequest(), Auth.sendOtp);
 router.post("/OtpVerify",VerifyOTPRequest(), Auth.OtpVerify);
+router.post("/VerfiyEmail", Auth.EmailVerify);
 
 // products apis
 router.post("/createProduct", Product.CreateProduct);

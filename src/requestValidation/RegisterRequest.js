@@ -22,21 +22,21 @@ const RegisterRequest = () => checkSchema({
          }
       }
    },
-   otp: {
-      isLength: {
-         errorMessage: 'Invalid OTP',
-         options: { min: 6, max: 6 },
-      },
-      custom: {
-         options: async (value, { req }) => {
-            const cachedOtp = cache.get(`register_otp_${req.body.email}`)
-            if (value !== cachedOtp) {
-               return Promise.reject('Invalid OTP');
-            }
-            return true
-         }
-      }
-   },
+   // otp: {
+   //    isLength: {
+   //       errorMessage: 'Invalid OTP',
+   //       options: { min: 6, max: 6 },
+   //    },
+   //    custom: {
+   //       options: async (value, { req }) => {
+   //          const cachedOtp = cache.get(`register_otp_${req.body.email}`)
+   //          if (value !== cachedOtp) {
+   //             return Promise.reject('Invalid OTP');
+   //          }
+   //          return true
+   //       }
+   //    }
+   // },
    password: {
       isLength: {
          errorMessage: 'Password should be 6 chars long',
@@ -44,11 +44,11 @@ const RegisterRequest = () => checkSchema({
          options: { min: 7 },
       },
    },
-   firstName: {
-      rtrim: {
-         // Options as an array
-         options: [' -'],
-      },
-   },
+   // firstName: {
+   //    rtrim: {
+   //       // Options as an array
+   //       options: [' -'],
+   //    },
+   // },
 })
 module.exports = RegisterRequest

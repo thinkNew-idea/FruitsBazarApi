@@ -18,7 +18,7 @@ const generateTokenForUser = (user) => {
   );
   return token;
 };
-const sendOtp = async (req, res, next) => {
+const sendOtp = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).send({
@@ -45,80 +45,29 @@ const sendOtp = async (req, res, next) => {
     });
   }
 };
-
-const OtpVerify = async(req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).send({
-      ...JSON.parse(JSON.stringify(errors)),
-      message: "Please fill valid inputs",
+const regisFun=async(name,email,last_name,address_1,address_2,mobile, password,res,req)=>{
+  User.create({ name,email,last_name,address_1,address_2,mobile, password })
+  .then(async (response) => {
+    loginFun(response.email,req.body.password,res,req);
+    // const token = generateTokenForUser(response);
+    // return res.status(200).send({
+    //   data: response,
+    //   meta: {
+    //     token,
+    //   },
+    //   ok: true,
+    //   message: "User registered",
+    // });
+  })
+  .catch((e) => {
+    return res.status(500).send({
+      error: e,
+      message: e.message,
       ok: false,
     });
-  }
-  const email = req.body.email;
-  const otp = req.body.otp;
-
-    await OtpModel.findOne({email:email}).then((response)=>{
-      console.warn({response})
-      if(otp==response?.otp){
-        return res.send({
-          ok: true,
-          response: response,
-          message: "OTP verification done successfuly",
-        });
-      }else{
-        return res.send({
-          ok: false,
-          message: "Invalid OTP !",
-        });
-      }
   });
 }
-
-const registerUser = async (req, res) => {
-   const errors = validationResult(req);
-   if (!errors.isEmpty()) {
-     return res.status(400).send({
-       ...JSON.parse(JSON.stringify(errors)),
-       ok: false,
-     });
-   }
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = await bcrypt
-    .genSalt(10)
-    .then((salt) => bcrypt.hash(req.body.password, salt))
-    .then((hash) => hash);
-  User.create({ username, email, password })
-    .then(async (response) => {
-      const token = generateTokenForUser(response);
-      return res.status(200).send({
-        data: response,
-        meta: {
-          token,
-        },
-        ok: true,
-        message: "User registered",
-      });
-    })
-    .catch((e) => {
-      return res.status(500).send({
-        error: e,
-        message: e.message,
-        ok: false,
-      });
-    });
-};
-const loginUser = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).send({
-      ...JSON.parse(JSON.stringify(errors)),
-      ok: false,
-    });
-  }
-  const email = req.body.email;
-  const password = req.body.password;
+const loginFun=async(email,password,res,req)=>{
   try {
     let user = await User.findOne({ email });
     if (!verifyPassword(password, user.password)) {
@@ -147,10 +96,88 @@ const loginUser = async (req, res, next) => {
       ok: false,
     });
   }
+}
+
+const OtpVerify = async(req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).send({
+      ...JSON.parse(JSON.stringify(errors)),
+      message: "Please fill valid inputs",
+      ok: false,
+    });
+  }
+  // const email = req.body.email;
+  // const otp = req.body.otp;
+  const {name,email,last_name,address_1,address_2,mobile,otp} = req.body;
+    await OtpModel.findOne({email:email}).then(async(response)=>{
+      if(otp==response?.otp){
+       
+        const password = await bcrypt
+          .genSalt(10)
+          .then((salt) => bcrypt.hash(req.body.password, salt))
+          .then((hash) => hash);
+          regisFun(name,email,last_name,address_1,address_2,mobile,password,res,req);
+      }else{
+        return res.send({
+          ok: false,
+          message: "Invalid OTP !",
+        });
+      }
+  });
+}
+
+// const registerUser = async (req, res) => {
+//    const errors = validationResult(req);
+//    if (!errors.isEmpty()) {
+//      return res.status(400).send({
+//        ...JSON.parse(JSON.stringify(errors)),
+//        ok: false,
+//      });
+//    }
+//   sendOtp(req,res);
+// };
+
+const loginUser = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).send({
+      ...JSON.parse(JSON.stringify(errors)),
+      ok: false,
+    });
+  }
+  const email = req.body.email;
+  const password = req.body.password;
+  loginFun(email,password,res,req);
 };
+
+const EmailVerify= async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).send({
+      ...JSON.parse(JSON.stringify(errors)),
+      ok: false,
+    });
+  }
+  User.findOne({ email: req.body.email }, { _id: 1, email: 1 }).then(user => {
+    if (user) {
+      return res.send({
+        ok: true,
+        message:'User already exits with given Email!',
+      });
+    } else {
+      return res.send({
+        ok: false,
+        message:'New User',
+      });
+    }
+ })
+};
+
 module.exports = {
-  registerUser,
+  // registerUser,
   sendOtp,
   loginUser,
-  OtpVerify
+  OtpVerify,
+  EmailVerify
 };
