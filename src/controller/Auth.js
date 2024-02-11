@@ -10,7 +10,7 @@ function verifyPassword(plaintextPassword, encryptedPassword) {
 const generateTokenForUser = (user) => {
   const tokenExpiresIn = "168h";
   const token = jwt.sign(
-    { user_id: user._id, username: user.username },
+    { user_id: user._id, email: user.email },
     'secret',
     {
       expiresIn: tokenExpiresIn,
@@ -73,7 +73,7 @@ const loginFun=async(email,password,res,req)=>{
     if (!verifyPassword(password, user.password)) {
       return res.status(400).send({
         ok: false,
-        message: "Invalid username or password.",
+        message: "Invalid email or password.",
       });
     }
     await User.findByIdAndUpdate(user._id, {
@@ -107,8 +107,6 @@ const OtpVerify = async(req, res, next) => {
       ok: false,
     });
   }
-  // const email = req.body.email;
-  // const otp = req.body.otp;
   const {name,email,last_name,address_1,address_2,mobile,otp} = req.body;
     await OtpModel.findOne({email:email}).then(async(response)=>{
       if(otp==response?.otp){
