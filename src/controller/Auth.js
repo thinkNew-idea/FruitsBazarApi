@@ -71,7 +71,7 @@ const loginFun=async(email,password,res,req)=>{
   try {
     let user = await User.findOne({ email });
     if (!verifyPassword(password, user.password)) {
-      return res.status(400).send({
+      return res.status(200).send({
         ok: false,
         message: "Invalid email or password.",
       });
