@@ -15,7 +15,7 @@ const cartAddFuntion = async (req, res, item,ProductDetails) => {
         return res.status(200).send({
           data: response,
           ok: true,
-          message: "Add to cart sucessfully !",
+          message: "Add to wishlist sucessfully !",
         });
       })
       .catch((e) => {
@@ -26,46 +26,52 @@ const cartAddFuntion = async (req, res, item,ProductDetails) => {
         });
       });
   } else {
-    let single = item[0];
-    let bookedVal=single.product_count + 1;
-    if(ProductDetails.productCount>=bookedVal){
-      val = {
-        user_id: req.body.user_id,
-        product_id: req.body.product_id,
-        product_count:bookedVal,
-      };
-      await Cart.findByIdAndUpdate(single?._id?.toString(), val, { new: true })
-        .then(async (response) => {
-          return res.status(200).send({
-            data: response,
-            ok: true,
-            message: "Add to cart sucessfully !",
-          });
-        })
-        .catch((e) => {
-          return res.status(500).send({
-            error: e,
-            message: e.message,
-            ok: false,
-          });
-        });
-    }else{
-      return res.status(200).send({
-        ok: false,
-        message: "Max "+ProductDetails.productCount+" product allowed !",
-      });
-    }
+    return res.status(200).send({
+      ok: false,
+      message: " product is already added !",
+    });
   }
+  // else {
+  //   let single = item[0];
+  //   let bookedVal=single.product_count + 1;
+  //   if(ProductDetails.productCount>=bookedVal){
+  //     val = {
+  //       user_id: req.body.user_id,
+  //       product_id: req.body.product_id,
+  //       product_count:bookedVal,
+  //     };
+  //     await Cart.findByIdAndUpdate(single?._id?.toString(), val, { new: true })
+  //       .then(async (response) => {
+  //         return res.status(200).send({
+  //           data: response,
+  //           ok: true,
+  //           message: "Add to wishlist sucessfully !",
+  //         });
+  //       })
+  //       .catch((e) => {
+  //         return res.status(500).send({
+  //           error: e,
+  //           message: e.message,
+  //           ok: false,
+  //         });
+  //       });
+  //   }else{
+  //     return res.status(200).send({
+  //       ok: false,
+  //       message: "Max "+ProductDetails.productCount+" product allowed !",
+  //     });
+  //   }
+  // }
 };
 const cartRemoveFuntion = async (req, res, item) => {
-  let val;
+  // let val;
   let single = item[0];
-  if (single?.product_count == 1) {
+  // if (single?.product_count == 1) {
     await Cart.findByIdAndDelete(single?._id?.toString())
       .then(async () => {
         return res.status(200).send({
           ok: true,
-          message: "Removed from cart sucessfully !",
+          message: "Removed from wishlist sucessfully !",
         });
       })
       .catch((e) => {
@@ -75,29 +81,29 @@ const cartRemoveFuntion = async (req, res, item) => {
           ok: false,
         });
       });
-  } else {
-    val = {
-      user_id: req.body.user_id,
-      product_id: req.body.product_id,
-      product_count: single?.product_count - 1,
-    };
+  // } else {
+  //   val = {
+  //     user_id: req.body.user_id,
+  //     product_id: req.body.product_id,
+  //     product_count: single?.product_count - 1,
+  //   };
 
-    await Cart.findByIdAndUpdate(single?._id?.toString(), val, { new: true })
-      .then(async (response) => {
-        return res.status(200).send({
-          data: response,
-          ok: true,
-          message: "Add to cart sucessfully !",
-        });
-      })
-      .catch((e) => {
-        return res.status(500).send({
-          error: e,
-          message: e.message,
-          ok: false,
-        });
-      });
-  }
+  //   await Cart.findByIdAndUpdate(single?._id?.toString(), val, { new: true })
+  //     .then(async (response) => {
+  //       return res.status(200).send({
+  //         data: response,
+  //         ok: true,
+  //         message: "Add to wishlist sucessfully !",
+  //       });
+  //     })
+  //     .catch((e) => {
+  //       return res.status(500).send({
+  //         error: e,
+  //         message: e.message,
+  //         ok: false,
+  //       });
+  //     });
+  // }
 };
 const AddCart = async (req, res) => {
   const errors = validationResult(req);
@@ -135,7 +141,7 @@ const GetCart = async (req, res) => {
     return res.status(200).send({
       data: cartList,
       ok: true,
-      message: "Cart given sucessfully !",
+      message: "Wishlist given sucessfully !",
     });
   }
 
