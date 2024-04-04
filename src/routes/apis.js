@@ -39,7 +39,7 @@ router.get("/getOrders",verifyToken,Product.GetOderList);
 
 //Cart
 router.post("/addWishList",verifyToken,Cart.AddCart);
-router.get("/getCart",verifyToken,Cart.GetCart);
+router.post("/getCart",verifyToken,Cart.GetCart);
 router.post("/removeWishList",verifyToken,Cart.RemoveCart);
 
 
